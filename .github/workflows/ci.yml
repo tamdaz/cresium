@@ -1,5 +1,6 @@
 on:
   push:
+    tags: [ 'v*' ]
   pull_request:
     branches: [ master ]
   schedule:
@@ -15,8 +16,6 @@ jobs:
           - os: ubuntu-latest
             crystal: nightly
           - os: macos-latest
-          - os: windows-latest
-            allow-failure: true
 
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.allow-failure == true }}
@@ -36,3 +35,92 @@ jobs:
       - name: Check formatting
         run: crystal tool format; git diff --exit-code
         if: matrix.crystal != 'nightly' && matrix.os == 'ubuntu-latest'
+
+  build:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux-x86_64-dynamic
+            os: ubuntu-latest
+            arch: x86_64
+            static: false
+            container: null
+          - name: linux-x86_64-static
+            os: ubuntu-latest
+            arch: x86_64
+            static: true
+            container: '84codes/crystal:latest-alpine'
+          - name: linux-aarch64-dynamic
+            os: ubuntu-24.04-arm
+            arch: aarch64
+            static: false
+            container: null
+          - name: linux-aarch64-static
+            os: ubuntu-24.04-arm
+            arch: aarch64
+            static: true
+            container: '84codes/crystal:latest-alpine'
+          - name: macos-x86_64-dynamic
+            os: macos-13
+            arch: x86_64
+            static: false
+            container: null
+          - name: macos-arm64-dynamic
+            os: macos-14
+            arch: arm64
+            static: false
+            container: null
+
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    steps:
+      - name: Download source
+        uses: actions/checkout@v4
+
+      - name: Install Crystal
+        if: matrix.container == null
+        uses: crystal-lang/install-crystal@v1
+
+      - name: Install build dependencies (alpine static)
+        if: matrix.container != null
+        run: apk add --no-cache git
+
+      - name: Install shards
+        run: shards install
+
+      - name: Build (dynamic)
+        if: matrix.static == false
+        run: shards build --release
+
+      - name: Build (static)
+        if: matrix.static == true
+        run: shards build --release --static
+
+      - name: Rename binary
+        run: mv bin/cresium bin/cresium-${{ matrix.name }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cresium-${{ matrix.name }}
+          path: bin/cresium-${{ matrix.name }}
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create release and upload binaries
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
