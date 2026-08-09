@@ -39,7 +39,7 @@ module Cresium::Theme
   def self.stopwatch_color(stopwatch : Stopwatch) : String
     return RUNNING if stopwatch.running?
     return ALERT if stopwatch.zero?
-    
+
     PAUSED
   end
 
