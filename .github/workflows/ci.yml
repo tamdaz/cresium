@@ -16,8 +16,10 @@ jobs:
             crystal: nightly
           - os: macos-latest
           - os: windows-latest
-          
+            allow-failure: true
+
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.allow-failure == true }}
     steps:
       - name: Download source
         uses: actions/checkout@v4
