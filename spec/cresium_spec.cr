@@ -49,21 +49,21 @@ describe Cresium::Stopwatch do
 end
 
 describe Cresium::Timer do
-  it "is not paused? nor expired? before being armed" do
+  it "is not paused? nor expired? before being set" do
     timer = Cresium::Timer.new
     timer.paused?.should be_false
     timer.expired?.should be_false
   end
 
-  it "is paused? once armed but not started" do
+  it "is paused? once set but not started" do
     timer = Cresium::Timer.new
-    timer.arm 5.seconds
+    timer.set 5.seconds
     timer.paused?.should be_true
   end
 
   it "is running? and not paused? once started" do
     timer = Cresium::Timer.new
-    timer.arm 5.seconds
+    timer.set 5.seconds
     timer.start
     timer.running?.should be_true
     timer.paused?.should be_false
@@ -71,7 +71,7 @@ describe Cresium::Timer do
 
   it "is expired? once the duration has elapsed" do
     timer = Cresium::Timer.new
-    timer.arm 0.001.seconds
+    timer.set 0.001.seconds
     timer.start
     sleep 0.05.seconds
     timer.expired?.should be_true
@@ -95,11 +95,11 @@ describe Cresium::Theme do
     timer = Cresium::Timer.new
     Cresium::Theme.timer_color(timer, true).should eq(Cresium::Theme::NEUTRAL)
 
-    timer.arm 5.seconds
+    timer.set 5.seconds
     Cresium::Theme.timer_color(timer, false).should eq(Cresium::Theme::PAUSED)
 
     timer.reset
-    timer.arm 0.001.seconds
+    timer.set 0.001.seconds
     timer.start
     sleep 0.05.seconds
     Cresium::Theme.timer_color(timer, false).should eq(Cresium::Theme::ALERT)

@@ -1,27 +1,29 @@
 require "crystal_tui"
-require "../digits"
+require "../letters"
 require "../theme"
+require "../render_helpers"
 
-# Overlay modal d'aide : logo CRESIUM en ASCII art + liste des raccourcis
-# clavier fusionnant chronomètre et minuteur. Se dessine par-dessus les
-# deux écrans, centré dans le rect qui lui est donné (celui de l'App).
+# Modal help overlay: CRESIUM ASCII-art logo plus the merged stopwatch/timer
+# keyboard shortcut list. Draws on top of both screens, centered in its rect.
 class Cresium::HelpOverlay < Tui::Widget
+  include RenderHelpers
+
   PADDING_X = 3
   PADDING_Y = 1
 
   SHORTCUTS = [
-    {"?", "afficher / masquer cette aide"},
-    {"tab", "changer chronomètre / minuteur"},
+    {"?", "toggle this help"},
+    {"tab", "switch stopwatch / timer"},
     {"space", "start / pause"},
-    {"r", "reset / nouvelle saisie"},
-    {"l", "lap (chronomètre)"},
-    {"hh:mm:ss + enter", "armer le minuteur"},
-    {"←→", "déplacer le curseur de saisie (minuteur)"},
-    {"backspace", "effacer un chiffre (minuteur)"},
-    {"n", "nouveau"},
-    {"d", "supprimer"},
-    {"↑↓", "naviguer"},
-    {"q", "quitter"},
+    {"r", "reset / new input"},
+    {"l", "lap (stopwatch)"},
+    {"hh:mm:ss + enter", "set the timer"},
+    {"←→", "move input cursor (timer)"},
+    {"backspace", "erase a digit (timer)"},
+    {"n", "new"},
+    {"d", "delete"},
+    {"↑↓", "navigate"},
+    {"q", "quit"},
   ]
 
   def initialize(id : String? = nil)
@@ -50,12 +52,12 @@ class Cresium::HelpOverlay < Tui::Widget
     box_x = @rect.x + (@rect.width - box_width) // 2
     box_y = @rect.y + (@rect.height - box_height) // 2
 
-    border_style = Tui::Style.new(fg: Theme.tui_color(Theme::MUTED))
-    title_style = Tui::Style.new(fg: Theme.tui_color(Theme::RUNNING))
-    text_style = Tui::Style.new(fg: Theme.tui_color(Theme::NEUTRAL))
-    key_style = Tui::Style.new(fg: Theme.tui_color(Theme::PAUSED))
+    border_style = Theme.style(Theme::MUTED)
+    title_style = Theme.style(Theme::RUNNING)
+    text_style = Theme.style(Theme::NEUTRAL)
+    key_style = Theme.style(Theme::PAUSED)
 
-    fill_box(buffer, clip, box_x, box_y, box_width, box_height, text_style)
+    fill_rect(buffer, clip, box_x, box_y, box_width, box_height, text_style)
     buffer.draw_box(box_x, box_y, box_width, box_height, border_style, Tui::BorderStyle::Round)
 
     logo_x = box_x + (box_width - logo_width) // 2
@@ -68,24 +70,6 @@ class Cresium::HelpOverlay < Tui::Widget
       y = box_y + PADDING_Y + logo.size + 1 + i
       draw_clipped(buffer, clip, text_x, y, key.rjust(key_col_width), key_style)
       draw_clipped(buffer, clip, text_x + key_col_width + 2, y, desc, text_style)
-    end
-  end
-
-  private def fill_box(buffer : Tui::Buffer, clip : Tui::Rect, x : Int32, y : Int32, w : Int32, h : Int32, style : Tui::Style) : Nil
-    h.times do |dy|
-      w.times do |dx|
-        next unless clip.contains?(x + dx, y + dy)
-        buffer.set(x + dx, y + dy, ' ', style)
-      end
-    end
-  end
-
-  private def draw_clipped(buffer : Tui::Buffer, clip : Tui::Rect, x : Int32, y : Int32, text : String, style : Tui::Style) : Nil
-    return unless y >= clip.y && y < clip.y + clip.height
-    text.each_char_with_index do |char, i|
-      px = x + i
-      next unless clip.contains?(px, y)
-      buffer.set(px, y, char, style)
     end
   end
 end

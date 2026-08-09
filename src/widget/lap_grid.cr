@@ -1,11 +1,20 @@
 require "crystal_tui"
 require "../stopwatch"
+require "../format_span"
+require "../render_helpers"
 
+# Renders a `Stopwatch`'s `laps` in columns, most recent first, `ROWS`
+# lines per column. Adds columns as long as the widget's width allows.
 class Cresium::LapGrid < Tui::Widget
+  include RenderHelpers
+
   ROWS = 5
 
   property laps : Array(Time::Span) = [] of Time::Span
   property style : Tui::Style = Tui::Style.new(fg: Tui::Color.default)
+
+  # True to omit milliseconds from lap times (narrow terminals, see
+  # `Cresium::App#compact_laps?`).
   property compact : Bool = false
 
   def min_size : {Int32, Int32}
@@ -32,11 +41,7 @@ class Cresium::LapGrid < Tui::Widget
         y = @rect.y + row
         next unless y < @rect.bottom
 
-        text.each_char_with_index do |char, i|
-          px = x + i
-          next unless clip.contains?(px, y)
-          buffer.set(px, y, char, @style)
-        end
+        draw_clipped(buffer, clip, x, y, text, @style)
       end
     end
   end

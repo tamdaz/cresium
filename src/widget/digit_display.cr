@@ -1,10 +1,14 @@
 require "crystal_tui"
 require "../digits"
 
+# Renders a string (time or input) as ASCII art via `Digits`, centered in
+# its rect, with an optional character highlighted (`cursor_index`).
 class Cresium::DigitDisplay < Tui::Widget
   getter text : String = ""
   property style : Tui::Style = Tui::Style.new(fg: Tui::Color.default)
 
+  # Index (in `text`) of the character to render as a blinking cursor
+  # (reversed style), or `nil` to show no cursor.
   property cursor_index : Int32? = nil
 
   def text=(value : String) : Nil
