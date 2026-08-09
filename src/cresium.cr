@@ -9,7 +9,7 @@ require "./widget/help_overlay"
 
 module Cresium
   VERSION = "0.1.0"
-  GIT_SHA = {{ `git rev-parse --short HEAD`.stringify }}
+  GIT_SHA = {{ `git rev-parse --short HEAD`.chomp.stringify }}
 
   class Screen < Tui::Widget
     def initialize(id : String? = nil)
@@ -489,7 +489,7 @@ OptionParser.parse do |parser|
   parser.on("-T", "--tty", "Couleurs en 16 couleurs ANSI (compatibilité TTY/console)") { Cresium::Theme.mode = Cresium::Theme::Mode::Ansi }
 
   parser.on("-v", "--version", "Affiche la version") do
-    puts "#{Cresium::VERSION} (revision #{Cresium::GIT_SHA})"
+    puts "version #{Cresium::VERSION} (#{Cresium::GIT_SHA})"
     exit
   end
 
