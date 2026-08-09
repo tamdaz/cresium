@@ -42,32 +42,32 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: linux-x86_64-dynamic
+          - name: linux-x86_64-glibc
             os: ubuntu-latest
             arch: x86_64
             static: false
             container: null
-          - name: linux-x86_64-static
+          - name: linux-x86_64-musl
             os: ubuntu-latest
             arch: x86_64
             static: true
             container: '84codes/crystal:latest-alpine'
-          - name: linux-aarch64-dynamic
+          - name: linux-aarch64-glibc
             os: ubuntu-24.04-arm
             arch: aarch64
             static: false
             container: null
-          - name: linux-aarch64-static
+          - name: linux-aarch64-musl
             os: ubuntu-24.04-arm
             arch: aarch64
             static: true
             container: '84codes/crystal:latest-alpine'
-          - name: macos-x86_64-dynamic
+          - name: darwin-x86_64
             os: macos-13
             arch: x86_64
             static: false
             container: null
-          - name: macos-arm64-dynamic
+          - name: darwin-arm64
             os: macos-14
             arch: arm64
             static: false
@@ -83,18 +83,21 @@ jobs:
         if: matrix.container == null
         uses: crystal-lang/install-crystal@v1
 
-      - name: Install build dependencies (alpine static)
+      - name: Install build dependencies (alpine)
         if: matrix.container != null
         run: apk add --no-cache git
+
+      - name: Mark repository as safe
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Install shards
         run: shards install
 
-      - name: Build (dynamic)
+      - name: Build (glibc)
         if: matrix.static == false
         run: shards build --release
 
-      - name: Build (static)
+      - name: Build (musl static)
         if: matrix.static == true
         run: shards build --release --static
 
