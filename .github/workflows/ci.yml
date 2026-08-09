@@ -57,16 +57,7 @@ jobs:
             arch: aarch64
             static: false
             container: null
-          - name: linux-aarch64-musl
-            os: ubuntu-24.04-arm
-            arch: aarch64
-            static: true
             container: '84codes/crystal:latest-alpine'
-          - name: darwin-x86_64
-            os: macos-13
-            arch: x86_64
-            static: false
-            container: null
           - name: darwin-arm64
             os: macos-14
             arch: arm64
