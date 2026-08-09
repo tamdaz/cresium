@@ -1,0 +1,17 @@
+name: cresium
+version: 0.1.0
+
+authors:
+  - Zohir Tamda <tamda.zohir.pro@gmail.com>
+
+targets:
+  cresium:
+    main: src/cresium.cr
+
+dependencies:
+  crystal_tui:
+    github: skuznetsov/crystal_tui
+
+crystal: '>= 1.21.0'
+
+license: MIT
