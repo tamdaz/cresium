@@ -3,7 +3,7 @@ require "crystal_tui"
 # Stacks multiple widgets (stopwatch, timer) where only one is `visible` at
 # a time; renders only visible children, sorted by `z_index`.
 class Cresium::Screen < Tui::Widget
-  def initialize(id : String? = nil)
+  def initialize(id : String? = nil) : Nil
     super(id)
   end
 

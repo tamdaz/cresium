@@ -18,6 +18,7 @@ class Cresium::HelpOverlay < Tui::Widget
     {"r", "reset / new input"},
     {"l", "lap (stopwatch)"},
     {"hh:mm:ss + enter", "set the timer"},
+    {"t", "target time input (timer)"},
     {"←→", "move input cursor (timer)"},
     {"backspace", "erase a digit (timer)"},
     {"n", "new"},
