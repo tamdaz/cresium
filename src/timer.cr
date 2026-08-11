@@ -7,6 +7,7 @@ class Cresium::Timer < Cresium::Clock
   # until set.
   getter? set = false
 
+  # Starts unset (`zero?` true), with no duration.
   def initialize
     super
     @duration = Time::Span.zero
@@ -22,6 +23,7 @@ class Cresium::Timer < Cresium::Clock
     @running = false
   end
 
+  # No-op until `set` has been called (unlike `Clock#start`).
   def start : Nil
     return unless @set
     super
@@ -35,6 +37,7 @@ class Cresium::Timer < Cresium::Clock
     @duration = Time::Span.zero
   end
 
+  # True when the timer has no duration set yet.
   def zero? : Bool
     !set?
   end
@@ -50,10 +53,12 @@ class Cresium::Timer < Cresium::Clock
     @set && remaining <= Time::Span.zero
   end
 
+  # True when set, stopped, and not yet expired.
   def paused? : Bool
     set? && !running? && !expired?
   end
 
+  # Time remaining as `hh:mm:ss[.fff]`.
   def format(with_millis : Bool = true) : String
     Cresium.format_span remaining, with_millis
   end

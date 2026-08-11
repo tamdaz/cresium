@@ -1,6 +1,7 @@
 require "crystal_tui"
 require "./stopwatch"
 require "./timer"
+require "./theme_mode"
 
 # Application color palette, resolved against the color mode the terminal
 # actually supports (`Mode`).
@@ -23,17 +24,6 @@ module Cresium::Theme
     NEUTRAL => Tui::ANSI::Color::BRIGHT_WHITE,
     MUTED   => Tui::ANSI::Color::BRIGHT_BLACK,
   }
-
-  enum Mode
-    # 24-bit RGB colors (default, modern terminals).
-    Truecolor
-
-    # 16-color ANSI fallback, for TTY/console compatibility (`--tty`).
-    Ansi
-
-    # No color, terminal's default style (`--no-color`).
-    None
-  end
 
   # Color for a `Stopwatch`'s current state (running, zero, paused).
   def self.stopwatch_color(stopwatch : Stopwatch) : String

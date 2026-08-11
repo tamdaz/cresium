@@ -27,16 +27,19 @@ class Cresium::HelpOverlay < Tui::Widget
     {"q", "quit"},
   ]
 
+  # Starts hidden — shown only after `toggle` is called (`[?]`).
   def initialize(id : String? = nil)
     super(id)
     @visible = false
   end
 
+  # Shows or hides the overlay.
   def toggle : Nil
     @visible = !@visible
     mark_dirty!
   end
 
+  # Draws the bordered box (logo + shortcut list), centered in `rect`.
   def render(buffer : Tui::Buffer, clip : Tui::Rect) : Nil
     return unless visible?
     return if @rect.empty?

@@ -4,6 +4,7 @@ abstract class Cresium::Clock
   # True while time is accumulating (not paused, not reset).
   getter? running = false
 
+  # Starts stopped, at zero accumulated time.
   def initialize : Nil
     @accumulated = Time::Span.zero
     @started_at = Time.instant

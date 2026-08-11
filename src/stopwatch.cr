@@ -14,6 +14,7 @@ class Cresium::Stopwatch < Cresium::Clock
     @laps.clear
   end
 
+  # True while stopped at 00:00:00 (never started, or just reset).
   def zero? : Bool
     !running? && elapsed == Time::Span.zero
   end
@@ -23,6 +24,7 @@ class Cresium::Stopwatch < Cresium::Clock
     laps << elapsed if running?
   end
 
+  # Elapsed time as `hh:mm:ss[.fff]`.
   def format(with_millis : Bool = true) : String
     Cresium.format_span elapsed, with_millis
   end

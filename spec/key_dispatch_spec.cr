@@ -93,18 +93,19 @@ describe "Cresium::App keyboard dispatch (timer, editing)" do
 end
 
 describe "Cresium::App keyboard dispatch (timer, running)" do
-  it "starts a new input by typing a digit, unless the timer is running" do
+  it "starts the countdown automatically once the duration is set" do
     app = Cresium::App.new
     app.on_capture(Tui::KeyEvent.new(key: Tui::Key::Tab))
     "000005".each_char { |c| app.on_event(key(c)) }
     app.on_event(key(Tui::Key::Enter))
     app.timer_editing?.should be_false
-
-    app.on_event(key(' ')) # start
     app.active_timer.running?.should be_true
 
     app.on_event(key('7')) # ignored: the timer is running
     app.timer_editing?.should be_false
+
+    app.on_event(key(' ')) # pause
+    app.active_timer.running?.should be_false
 
     app.on_event(key('r')) # reset -> back to editing
     app.timer_editing?.should be_true

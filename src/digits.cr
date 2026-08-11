@@ -4,9 +4,10 @@ require "./glyph_font"
 # separator) and `.` (millisecond separator). Provides two sizes: the default
 # (4 lines, block octants) fits VGA text mode (80x25); `LARGE_GLYPHS` (7
 # lines, full blocks) is used instead on big enough terminals (see
-# `Cresium::App#large_digits?`). `↑`/`↓` (scroll indicators) and `█` are only
-# defined in the small set — they're always rendered at that size (see
-# `Cresium::App#refresh_scroll_arrows`), never as part of a large-mode digit.
+# `Cresium::LayoutConfig.large_digits?`). `↑`/`↓` (scroll indicators) and `█`
+# are only defined in the small set — they're always rendered at that size
+# (see `Cresium::StackLayout#refresh_scroll_arrows`), never as part of a
+# large-mode digit.
 module Cresium::Digits
   extend GlyphFont
 
@@ -66,10 +67,12 @@ module Cresium::Digits
     nil
   end
 
+  # The glyph table to render from, small or large.
   def self.glyphs(large : Bool = false) : Hash(Char, Array(String))
     large ? LARGE_GLYPHS : GLYPHS
   end
 
+  # Number of lines per glyph, small or large.
   def self.rows(large : Bool = false) : Int32
     large ? LARGE_HEIGHT : HEIGHT
   end

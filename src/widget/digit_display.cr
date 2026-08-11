@@ -15,30 +15,35 @@ class Cresium::DigitDisplay < Tui::Widget
   # (reversed style), or `nil` to show no cursor.
   property cursor_index : Int32? = nil
 
+  # Updates the rendered text; no-op (no redraw) if unchanged.
   def text=(value : String) : Nil
     return if @text == value
     @text = value
     mark_dirty!
   end
 
+  # Switches between the small and large glyph sets; no-op if unchanged.
   def large=(value : Bool) : Nil
     return if @large == value
     @large = value
     mark_dirty!
   end
 
+  # Moves (or clears) the blinking cursor highlight; no-op if unchanged.
   def cursor_index=(value : Int32?) : Nil
     return if @cursor_index == value
     @cursor_index = value
     mark_dirty!
   end
 
+  # Natural size of the current text at the current glyph size.
   def min_size : Tuple(Int32, Int32)
     lines = Digits.render @text, @large
 
     {lines.first.size, Digits.rows(@large)}
   end
 
+  # Draws the ASCII-art glyphs for `text`, centered in the widget's rect.
   def render(buffer : Tui::Buffer, clip : Tui::Rect) : Nil
     return unless visible?
     return if @rect.empty?

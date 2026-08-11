@@ -14,13 +14,16 @@ class Cresium::LapGrid < Tui::Widget
   property style : Tui::Style = Tui::Style.new(fg: Tui::Color.default)
 
   # True to omit milliseconds from lap times (narrow terminals, see
-  # `Cresium::App#compact_laps?`).
+  # `Cresium::LayoutConfig.compact_laps?`).
   property compact : Bool = false
 
+  # No minimum width (columns collapse to zero if there's no room); always
+  # reserves `ROWS` lines of height.
   def min_size : {Int32, Int32}
     {0, ROWS}
   end
 
+  # Draws as many lap columns as fit in the widget's width.
   def render(buffer : Tui::Buffer, clip : Tui::Rect) : Nil
     return unless visible?
     return if @rect.empty? || laps.empty?
@@ -46,6 +49,7 @@ class Cresium::LapGrid < Tui::Widget
     end
   end
 
+  # Column width, sized to the widest possible lap line at the current count.
   private def cell_width : Int32
     sample = "Lap #{laps.size}: " + Cresium.format_span(Time::Span.zero, !compact)
     sample.size + 2

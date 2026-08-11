@@ -3,10 +3,12 @@ require "crystal_tui"
 # Stacks multiple widgets (stopwatch, timer) where only one is `visible` at
 # a time; renders only visible children, sorted by `z_index`.
 class Cresium::Screen < Tui::Widget
+  # Plain `Tui::Widget` constructor; no extra state to set up.
   def initialize(id : String? = nil) : Nil
     super(id)
   end
 
+  # Draws only the visible children, back to front by `z_index`.
   def render(buffer : Tui::Buffer, clip : Tui::Rect) : Nil
     return unless visible?
 
