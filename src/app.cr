@@ -100,8 +100,8 @@ class Cresium::App < Tui::App
       @stopwatch_controller.view.visible = false
       @timer_controller.view.visible = false
       @help_overlay.visible = false
-      @too_small_label.text = "Terminal trop petit (#{@rect.width}x#{@rect.height})\n" \
-                              "Agrandissez-le a #{MIN_WIDTH}x#{MIN_HEIGHT} minimum"
+      @too_small_label.text = "Terminal too small (#{@rect.width}x#{@rect.height})\n" \
+                              "Resize to at least #{MIN_WIDTH}x#{MIN_HEIGHT}"
       too_small_label_lines = 2
       @too_small_label.rect = Tui::Rect.new(
         @rect.x, @rect.y + (@rect.height - too_small_label_lines) // 2, @rect.width, too_small_label_lines
