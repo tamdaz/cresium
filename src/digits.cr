@@ -10,7 +10,7 @@ require "./glyph_font"
 module Cresium::Digits
   extend GlyphFont
 
-  HEIGHT = 4
+  HEIGHT      = 4
   ARROW_WIDTH = 5
 
   LARGE_HEIGHT = 7
@@ -47,7 +47,7 @@ module Cresium::Digits
     ' ' => ["     ", "     ", "     ", "     "],
     '█' => ["█████", "█████", "█████", "█████"],
     '↑' => ["𜷋𜵯█𜶩𜶻", "𜴂 █ 𜴅", "  █  ", "  ▀  "],
-    '↓' => ["  ▄  ", "  █  ", "𜶻 █ 𜷋", "𜴅𜶩█𜵯𜴂"]
+    '↓' => ["  ▄  ", "  █  ", "𜶻 █ 𜷋", "𜴅𜶩█𜵯𜴂"],
   }
 
   # Column range (in the rendered ASCII art) covered by the glyph at

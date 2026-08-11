@@ -20,8 +20,8 @@ class Cresium::App < Tui::App
   TIMER_LAST_DIGIT            = TIMER_DIGITS - 1
 
   # `hh:mm` target-time input, toggled with `[t]` while editing a timer.
-  TARGET_TIME_DIGITS      =  4
-  TARGET_TIME_LAST_DIGIT  = TARGET_TIME_DIGITS - 1
+  TARGET_TIME_DIGITS     = 4
+  TARGET_TIME_LAST_DIGIT = TARGET_TIME_DIGITS - 1
 
   # VGA text mode (80x25) is the smallest resolution we support.
   MIN_WIDTH  = 80
@@ -29,7 +29,7 @@ class Cresium::App < Tui::App
 
   # Terminal size at/above which digits switch to `Digits::LARGE_GLYPHS`.
   LARGE_MIN_WIDTH  = 160
-  LARGE_MIN_HEIGHT = 40
+  LARGE_MIN_HEIGHT =  40
 
   # Vertical position of the gap directly above/below the active slot (where
   # `[↑↓]` scroll indicators go, to the right of the active display), or
@@ -193,7 +193,7 @@ class Cresium::App < Tui::App
       @stopwatch_screen.visible = false
       @timer_screen.visible = false
       @too_small_label.text = "Terminal trop petit (#{@rect.width}x#{@rect.height})\n" \
-                               "Agrandissez-le a #{MIN_WIDTH}x#{MIN_HEIGHT} minimum"
+                              "Agrandissez-le a #{MIN_WIDTH}x#{MIN_HEIGHT} minimum"
       too_small_label_lines = 2
       @too_small_label.rect = Tui::Rect.new(
         @rect.x, @rect.y + (@rect.height - too_small_label_lines) // 2, @rect.width, too_small_label_lines
