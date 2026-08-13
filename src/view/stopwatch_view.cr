@@ -20,7 +20,7 @@ class Cresium::StopwatchView
   @arrows : ScrollArrows?
 
   # Creates the widgets, unattached to a `Screen` until `build` is called.
-  def initialize(show_message : Bool)
+  def initialize(show_message : Bool) : Nil
     @displays = [DigitDisplay.new] of DigitDisplay
     @slots = [nil] of Int32?
     @laps = LapGrid.new

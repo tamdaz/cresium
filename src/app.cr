@@ -18,7 +18,7 @@ class Cresium::App < Tui::App
 
   # `show_millis` and `show_message` mirror the `--no-ms` and `--no-message`
   # CLI flags (inverted — see `cli.cr`).
-  def initialize(@show_millis : Bool = true, show_message : Bool = true)
+  def initialize(@show_millis : Bool = true, show_message : Bool = true) : Nil
     super()
     # `Tui::App#initialize` reads the terminal size but only assigns it to
     # `@rect` on `run`/`mount_headless` — without this, `@rect` stays

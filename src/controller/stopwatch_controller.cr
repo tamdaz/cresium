@@ -12,7 +12,7 @@ class Cresium::StopwatchController
   getter view : StopwatchView
 
   # Starts with a single fresh stopwatch, active and selected.
-  def initialize(show_message : Bool)
+  def initialize(show_message : Bool) : Nil
     @stopwatches = [Stopwatch.new] of Stopwatch
     @active_index = 0
     @view = StopwatchView.new(show_message)

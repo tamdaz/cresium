@@ -27,7 +27,7 @@ class Cresium::TimerController
   getter view : TimerView
 
   # Starts with a single fresh (unset) timer, in editing mode.
-  def initialize(show_message : Bool)
+  def initialize(show_message : Bool) : Nil
     @timers = [Timer.new] of Timer
     @active_index = 0
 

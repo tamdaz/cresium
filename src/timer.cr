@@ -8,7 +8,7 @@ class Cresium::Timer < Cresium::Clock
   getter? set = false
 
   # Starts unset (`zero?` true), with no duration.
-  def initialize
+  def initialize : Nil
     super
     @duration = Time::Span.zero
   end
