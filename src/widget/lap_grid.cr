@@ -8,6 +8,7 @@ require "../render_helpers"
 class Cresium::LapGrid < Tui::Widget
   include RenderHelpers
 
+  # Number maximal of rows
   ROWS = 5
 
   property laps : Array(Time::Span) = [] of Time::Span
@@ -19,7 +20,7 @@ class Cresium::LapGrid < Tui::Widget
 
   # No minimum width (columns collapse to zero if there's no room); always
   # reserves `ROWS` lines of height.
-  def min_size : {Int32, Int32}
+  def min_size : Tuple(Int32, Int32)
     {0, ROWS}
   end
 
