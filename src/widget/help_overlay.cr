@@ -70,6 +70,7 @@ class Cresium::HelpOverlay < Tui::Widget
     end
 
     text_x = box_x + PADDING_X
+
     SHORTCUTS.each_with_index do |(key, desc), i|
       y = box_y + PADDING_Y + logo.size + 1 + i
       draw_clipped(buffer, clip, text_x, y, key.rjust(key_col_width), key_style)
