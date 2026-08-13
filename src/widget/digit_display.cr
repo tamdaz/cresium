@@ -45,8 +45,7 @@ class Cresium::DigitDisplay < Tui::Widget
 
   # Draws the ASCII-art glyphs for `text`, centered in the widget's rect.
   def render(buffer : Tui::Buffer, clip : Tui::Rect) : Nil
-    return unless visible?
-    return if @rect.empty?
+    return if @rect.empty? || !visible?
 
     lines = Digits.render @text, @large
     width = lines.first.size
