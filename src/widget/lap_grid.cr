@@ -40,7 +40,7 @@ class Cresium::LapGrid < Tui::Widget
       lo = Math.max(0, hi - ROWS)
 
       (lo...hi).to_a.reverse.each_with_index do |lap_index, row|
-        text = "Lap #{lap_index + 1}: #{Cresium.format_span(laps[lap_index], !compact)}"
+        text = "Lap #{lap_index + 1}: #{Cresium.format_span(laps[lap_index], !compact?)}"
         x = @rect.x + col * col_w
         y = @rect.y + row
         next unless y < @rect.bottom
@@ -52,7 +52,7 @@ class Cresium::LapGrid < Tui::Widget
 
   # Column width, sized to the widest possible lap line at the current count.
   private def cell_width : Int32
-    sample = "Lap #{laps.size}: " + Cresium.format_span(Time::Span.zero, !compact)
+    sample = "Lap #{laps.size}: " + Cresium.format_span(Time::Span.zero, !compact?)
     sample.size + 2
   end
 end
