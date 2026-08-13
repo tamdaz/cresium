@@ -113,6 +113,7 @@ class Cresium::TimerView
     end
 
     @history_label.text = if editing
+                            # ameba:disable Naming/BlockParameterName
                             history.reverse.map { |d| Cresium.format_span d, show_millis }.join("\n")
                           else
                             ""

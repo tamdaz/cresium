@@ -76,7 +76,7 @@ class Cresium::StopwatchView
 
     @slots.each_with_index do |sw_index, slot|
       d = @displays[slot]
-      
+
       if sw_index && sw_index < stopwatches.size
         d.text = stopwatches[sw_index].format(show_millis)
         d.style = Theme.style(Theme::MUTED)

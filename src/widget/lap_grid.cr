@@ -16,7 +16,7 @@ class Cresium::LapGrid < Tui::Widget
 
   # True to omit milliseconds from lap times (narrow terminals, see
   # `Cresium::LayoutConfig.compact_laps?`).
-  property compact : Bool = false
+  property? compact : Bool = false
 
   # No minimum width (columns collapse to zero if there's no room); always
   # reserves `ROWS` lines of height.

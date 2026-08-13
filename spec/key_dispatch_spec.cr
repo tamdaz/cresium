@@ -45,6 +45,7 @@ describe "Cresium::App keyboard dispatch (timer, editing)" do
     app = Cresium::App.new
     app.on_capture(Tui::KeyEvent.new(key: Tui::Key::Tab)) # switch to the timer screen
 
+    # ameba:disable Naming/BlockParameterName
     "000010".each_char { |c| app.on_event(key(c)) }
     app.timer_buffer.should eq("000010")
 
@@ -96,6 +97,7 @@ describe "Cresium::App keyboard dispatch (timer, running)" do
   it "starts the countdown automatically once the duration is set" do
     app = Cresium::App.new
     app.on_capture(Tui::KeyEvent.new(key: Tui::Key::Tab))
+    # ameba:disable Naming/BlockParameterName
     "000005".each_char { |c| app.on_event(key(c)) }
     app.on_event(key(Tui::Key::Enter))
     app.timer_editing?.should be_false

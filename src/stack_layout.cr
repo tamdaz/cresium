@@ -52,7 +52,7 @@ module Cresium::StackLayout
     slots, offset, before_start, after_size, later_size = visible_slots(window, count, active_index, scroll_offset)
 
     ensure_pool_size(displays, screen, slots.size)
-    displays.each { |display| display.large = large }
+    displays.each(&.large=(large))
 
     active_rect = position_displays(displays, rect, window, digit_height, slots, count)
     arrows = scroll_arrows(active_rect, before_start, after_size, later_size)
@@ -131,7 +131,7 @@ module Cresium::StackLayout
   # Positions each display at its slot and hides the unused pool entries.
   # Returns the active display's rect (needed to place the scroll arrows).
   private def position_displays(displays : Array(DigitDisplay), rect : Tui::Rect, window : ScrollWindow, digit_height : Int32, slots : Array(Int32?), count : Int32) : Tui::Rect
-    active_slot_index = slots.index(nil).not_nil!
+    active_slot_index = slots.index!(nil)
 
     # The active entry always sits at `window.active_slot` — fixed dead
     # center — UNLESS the whole list is smaller than `max_slots`, in which

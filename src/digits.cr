@@ -61,13 +61,14 @@ module Cresium::Digits
     table = glyphs(large)
     col = 0
 
+    # ameba:disable Naming/BlockParameterName
     text.chars.each_with_index do |c, i|
       width = (table[c]? || table[':']).first.size
 
       if i == index
-        return (col...(col + width)) 
+        return (col...(col + width))
       end
-      
+
       col += width + 1
     end
 

@@ -53,7 +53,7 @@ class Cresium::App < Tui::App
   # Builds the widget tree: both screens (stacked, one hidden), the help
   # overlay, and the too-small message, all on top of each other via z-index.
   def compose : Array(Tui::Widget)
-    @screens.each { |s| s.view.build }
+    @screens.each(&.view.build)
 
     @help_overlay.z_index = 100
     @too_small_label.z_index = 200
@@ -94,10 +94,10 @@ class Cresium::App < Tui::App
 
   # Gives the app's full rect to both screens (stacked, only one visible).
   private def layout_children : Nil
-    @children.each { |child| child.rect = @rect }
+    @children.each(&.rect=(@rect))
 
     if too_small?
-      @screens.each { |s| s.view.visible = false }
+      @screens.each(&.view.visible=(false))
       @help_overlay.visible = false
       @too_small_label.text = "Terminal too small (#{@rect.width}x#{@rect.height})\n" \
                               "Resize to at least #{MIN_WIDTH}x#{MIN_HEIGHT}"
@@ -110,8 +110,9 @@ class Cresium::App < Tui::App
     end
 
     @too_small_label.visible = false
+    # ameba:disable Naming/BlockParameterName
     @screens.each_with_index { |s, i| s.view.visible = i == @current_index }
-    @screens.each { |s| s.layout(@rect) }
+    @screens.each(&.layout(@rect))
   end
 
   # App-wide keys that must win over whichever screen is active: `?` and
@@ -161,7 +162,7 @@ class Cresium::App < Tui::App
     spawn do
       loop do
         sleep 16.milliseconds
-        @screens.each { |s| s.tick(@rect, @show_millis) }
+        @screens.each(&.tick(@rect, @show_millis))
         mark_dirty!
       end
     end

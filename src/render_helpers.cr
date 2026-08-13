@@ -24,7 +24,9 @@ module Cresium::RenderHelpers
   # Fills a rectangle (`x`, `y`, `w`, `h`) with spaces using `style`,
   # respecting `clip`.
   def fill_rect(buffer : Tui::Buffer, clip : Tui::Rect, x : Int32, y : Int32, w : Int32, h : Int32, style : Tui::Style) : Nil
+    # ameba:disable Naming/BlockParameterName
     h.times do |dy|
+      # ameba:disable Naming/BlockParameterName
       w.times do |dx|
         next unless clip.contains?(x + dx, y + dy)
         buffer.set(x + dx, y + dy, ' ', style)

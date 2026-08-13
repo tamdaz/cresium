@@ -3,7 +3,7 @@ module Cresium
   # `with_millis: false` omits the `.fff` part, for narrow terminals.
   def self.format_span(span : Time::Span, with_millis : Bool = true) : String
     total_seconds = span.total_seconds.to_i
-    
+
     h = total_seconds // 3600
     m = (total_seconds // 60) % 60
     s = total_seconds % 60

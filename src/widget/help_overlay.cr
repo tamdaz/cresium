@@ -66,7 +66,7 @@ class Cresium::HelpOverlay < Tui::Widget
     logo = Cresium::Letters.render("CRESIUM")
     logo_width = logo.first.size
     key_col_width = SHORTCUTS.max_of { |k, _| k.size }
-    lines_width = SHORTCUTS.max_of { |k, desc| key_col_width + 2 + desc.size }
+    lines_width = SHORTCUTS.max_of { |_, desc| key_col_width + 2 + desc.size }
     content_width = Math.max(logo_width, lines_width)
 
     box_width = content_width + PADDING_X * 2

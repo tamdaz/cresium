@@ -126,7 +126,7 @@ class Cresium::TimerController
     hours = buffer[0..1].to_i
     minutes = buffer[2..3].to_i
     seconds = buffer[4..5].to_i
-    
+
     (hours * 3600 + minutes * 60 + seconds).seconds
   end
 

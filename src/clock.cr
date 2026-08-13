@@ -21,7 +21,7 @@ abstract class Cresium::Clock
   # Freezes the accumulated time so far. No-op if already paused.
   def pause : Nil
     return unless @running
-    
+
     @accumulated += Time.instant - @started_at
     @running = false
   end

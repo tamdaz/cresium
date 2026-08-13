@@ -36,6 +36,7 @@ module Cresium::Dispatchable
       {% end %}
     {% end %}
 
+    # ameba:disable Naming/BlockParameterName
     {% all_groups = bindings.map { |b| b[3] }.reduce([] of Nil) { |acc, g| acc + g }.uniq %}
 
     {% for group in all_groups %}
@@ -44,7 +45,7 @@ module Cresium::Dispatchable
           {% if binding[3].includes?(group) %}
             {% method = binding[0] %}
             {% key = binding[1] %}
-            
+
             {% if key.is_a?(CharLiteral) %}
               if event.char == {{key}}
                 return {{method.name}} != false
