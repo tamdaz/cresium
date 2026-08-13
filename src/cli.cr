@@ -9,7 +9,9 @@ show_message = true
 OptionParser.parse do |parser|
   parser.banner = "Usage: cresium [options]"
 
-  parser.on("--no-ms", "Don't show milliseconds") { show_millis = false }
+  parser.on("--no-ms", "Don't show milliseconds") do
+    show_millis = false
+  end
 
   parser.on("-M", "--no-message", "Don't show the shortcut bar at the bottom") do
     show_message = false
@@ -19,7 +21,7 @@ OptionParser.parse do |parser|
     Cresium::Theme.mode = Cresium::Theme::Mode::None
   end
 
-  parser.on("-T", "--tty", "16-color ANSI mode (TTY/console compatibility)") do
+  parser.on("-T", "--tty", "Enable 16-color ANSI mode") do
     Cresium::Theme.mode = Cresium::Theme::Mode::Ansi
   end
 

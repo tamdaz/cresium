@@ -23,8 +23,14 @@ module Cresium::GlyphFont
     # space. Characters missing from the glyph table fall back to `':'`.
     def self.render(text : String, large : Bool = false) : Array(String)
       table = glyphs(large)
-      glyph_rows = text.chars.map { |c| table[c]? || table[':'] }
-      Array.new(rows(large)) { |row| glyph_rows.map { |g| g[row] }.join(" ") }
+
+      glyph_rows = text.chars.map do |char|
+        table[char]? || table[':']
+      end
+
+      Array.new(rows(large)) do |row|
+        glyph_rows.map(&.[row]).join(" ")
+      end
     end
   end
 end

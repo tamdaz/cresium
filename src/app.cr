@@ -6,6 +6,7 @@ require "./theme"
 require "./layout_config"
 require "./controller/stopwatch_controller"
 require "./controller/timer_controller"
+require "./screen_controller"
 require "./widget/help_overlay"
 
 # Cresium TUI application: a stopwatch screen and a timer screen (each
@@ -32,10 +33,10 @@ class Cresium::App < Tui::App
     width, height = 120, 30 if width < MIN_WIDTH || height < MIN_HEIGHT
     @rect = Tui::Rect.new(0, 0, width, height)
 
-    @current_screen = :stopwatch
-
     @stopwatch_controller = StopwatchController.new(show_message)
     @timer_controller = TimerController.new(show_message)
+    @screens = [@stopwatch_controller, @timer_controller] of ScreenController
+    @current_index = 0
     @timer_controller.view.visible = false
 
     @help_overlay = HelpOverlay.new
@@ -52,8 +53,7 @@ class Cresium::App < Tui::App
   # Builds the widget tree: both screens (stacked, one hidden), the help
   # overlay, and the too-small message, all on top of each other via z-index.
   def compose : Array(Tui::Widget)
-    @stopwatch_controller.view.build
-    @timer_controller.view.build
+    @screens.each { |s| s.view.build }
 
     @help_overlay.z_index = 100
     @too_small_label.z_index = 200
@@ -80,7 +80,7 @@ class Cresium::App < Tui::App
   end
 
   def timer_buffer : String
-    @timer_controller.buffer
+    @timer_controller.input.buffer
   end
 
   def timer_editing? : Bool
@@ -97,8 +97,7 @@ class Cresium::App < Tui::App
     @children.each { |child| child.rect = @rect }
 
     if too_small?
-      @stopwatch_controller.view.visible = false
-      @timer_controller.view.visible = false
+      @screens.each { |s| s.view.visible = false }
       @help_overlay.visible = false
       @too_small_label.text = "Terminal too small (#{@rect.width}x#{@rect.height})\n" \
                               "Resize to at least #{MIN_WIDTH}x#{MIN_HEIGHT}"
@@ -111,11 +110,8 @@ class Cresium::App < Tui::App
     end
 
     @too_small_label.visible = false
-    @stopwatch_controller.view.visible = @current_screen == :stopwatch
-    @timer_controller.view.visible = @current_screen == :timer
-
-    @stopwatch_controller.layout(@rect)
-    @timer_controller.layout(@rect)
+    @screens.each_with_index { |s, i| s.view.visible = i == @current_index }
+    @screens.each { |s| s.layout(@rect) }
   end
 
   # App-wide keys that must win over whichever screen is active: `?` and
@@ -146,21 +142,15 @@ class Cresium::App < Tui::App
     return super unless event.is_a?(Tui::KeyEvent)
     return super if too_small?
 
-    handled = @current_screen == :stopwatch ? @stopwatch_controller.handle_key(event) : @timer_controller.handle_key(event)
+    handled = @screens[@current_index].handle_key(event)
     handled || super
   end
 
   # Swaps which screen (stopwatch/timer) is visible and active for input.
   private def toggle_screen : Nil
-    if @current_screen == :stopwatch
-      @stopwatch_controller.view.visible = false
-      @timer_controller.view.visible = true
-      @current_screen = :timer
-    else
-      @timer_controller.view.visible = false
-      @stopwatch_controller.view.visible = true
-      @current_screen = :stopwatch
-    end
+    @screens[@current_index].view.visible = false
+    @current_index = 1 - @current_index
+    @screens[@current_index].view.visible = true
 
     mark_dirty!
   end
@@ -171,8 +161,7 @@ class Cresium::App < Tui::App
     spawn do
       loop do
         sleep 16.milliseconds
-        @stopwatch_controller.tick(@rect, @show_millis)
-        @timer_controller.tick(@rect, @show_millis)
+        @screens.each { |s| s.tick(@rect, @show_millis) }
         mark_dirty!
       end
     end

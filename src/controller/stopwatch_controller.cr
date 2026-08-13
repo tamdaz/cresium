@@ -1,5 +1,6 @@
 require "crystal_tui"
 require "../dispatchable"
+require "../screen_controller"
 require "../stopwatch"
 require "../view/stopwatch_view"
 
@@ -7,6 +8,7 @@ require "../view/stopwatch_view"
 # active) and its keyboard handlers, and drives its `StopwatchView`.
 class Cresium::StopwatchController
   include Dispatchable
+  include ScreenController
 
   getter stopwatches : Array(Stopwatch)
   getter view : StopwatchView

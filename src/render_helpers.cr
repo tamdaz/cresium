@@ -1,5 +1,11 @@
 require "crystal_tui"
 
+# Adds a `style` property (defaulting to the terminal's default foreground,
+# no background/attributes) to a widget — shared by `DigitDisplay` and `LapGrid`.
+module Cresium::Styled
+  property style : Tui::Style = Tui::Style.new(fg: Tui::Color.default)
+end
+
 # Drawing helpers shared by widgets that render raw text character by
 # character onto a `Tui::Buffer`, respecting the `clip` rect given by the
 # framework (the actually writable visible area).

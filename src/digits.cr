@@ -54,16 +54,23 @@ module Cresium::Digits
   # Column range (in the rendered ASCII art) covered by the glyph at
   # `index` in `text`, or `nil` if `index` is out of bounds.
   def self.glyph_column_range(text : String, index : Int32?, large : Bool = false) : Range(Int32, Int32)?
-    return nil unless index
-    return nil unless index >= 0 && index < text.size
+    return nil if index.nil? || index <= 0 && index >= text.size
+    # return nil unless index
+    # return nil unless index >= 0 && index < text.size
 
     table = glyphs(large)
     col = 0
+
     text.chars.each_with_index do |c, i|
       width = (table[c]? || table[':']).first.size
-      return (col...(col + width)) if i == index
+
+      if i == index
+        return (col...(col + width)) 
+      end
+      
       col += width + 1
     end
+
     nil
   end
 

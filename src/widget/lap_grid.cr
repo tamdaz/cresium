@@ -7,12 +7,12 @@ require "../render_helpers"
 # lines per column. Adds columns as long as the widget's width allows.
 class Cresium::LapGrid < Tui::Widget
   include RenderHelpers
+  include Styled
 
   # Number maximal of rows
   ROWS = 5
 
   property laps : Array(Time::Span) = [] of Time::Span
-  property style : Tui::Style = Tui::Style.new(fg: Tui::Color.default)
 
   # True to omit milliseconds from lap times (narrow terminals, see
   # `Cresium::LayoutConfig.compact_laps?`).

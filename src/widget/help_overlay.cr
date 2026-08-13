@@ -2,6 +2,8 @@ require "crystal_tui"
 require "../letters"
 require "../theme"
 require "../render_helpers"
+require "../controller/stopwatch_controller"
+require "../controller/timer_controller"
 
 # Modal help overlay: CRESIUM ASCII-art logo plus the merged stopwatch/timer
 # keyboard shortcut list. Draws on top of both screens, centered in its rect.
@@ -11,21 +13,38 @@ class Cresium::HelpOverlay < Tui::Widget
   PADDING_X = 3
   PADDING_Y = 1
 
-  SHORTCUTS = [
-    {"?", "toggle this help"},
-    {"tab", "switch stopwatch / timer"},
-    {"space", "start / pause"},
-    {"r", "reset / new input"},
-    {"l", "lap (stopwatch)"},
-    {"hh:mm:ss + enter", "set the timer"},
-    {"t", "target time input (timer)"},
-    {"←→", "move input cursor (timer)"},
-    {"backspace", "erase a digit (timer)"},
-    {"n", "new"},
-    {"d", "delete"},
-    {"↑↓", "navigate"},
-    {"q", "quit"},
+  # Every binding declared through `@[OnKeyPress]`, both screens — source of
+  # truth for the descriptions in `ROWS` below.
+  ALL_BINDINGS = StopwatchController::KEY_BINDINGS + TimerController::KEY_BINDINGS
+
+  # Display rows, in display order: `{displayed key, [raw key specs it
+  # covers], description override}`. `nil` looks the description up in
+  # `ALL_BINDINGS`; an override is needed where a row merges bindings with
+  # different descriptions ("r"), merges several keys ("←→", "↑↓"), or reads
+  # better rephrased ("hh:mm:ss + enter", "t"). An empty key list means an
+  # app-level key handled directly in `App#on_capture`, which never goes
+  # through `Dispatchable`.
+  ROWS = [
+    {"?", [] of String, "toggle this help"},
+    {"tab", [] of String, "switch stopwatch / timer"},
+    {"space", ["space"], "start / pause"},
+    {"r", ["r"], "reset / new input"},
+    {"l", ["l"], "lap (stopwatch)"},
+    {"hh:mm:ss + enter", ["enter"], "set the timer"},
+    {"t", ["t"], "target time input (timer)"},
+    {"←→", ["left", "right"], "move input cursor (timer)"},
+    {"backspace", ["backspace"], "erase a digit (timer)"},
+    {"n", ["n"], nil},
+    {"d", ["d"], nil},
+    {"↑↓", ["up", "down"], nil},
+    {"q", [] of String, "quit"},
   ]
+
+  SHORTCUTS = ROWS.map do |display_key, raw_keys, override|
+    desc = override || ALL_BINDINGS.find { |key, _, _| raw_keys.includes?(key) }.try(&.[1])
+    raise "HelpOverlay: no @[OnKeyPress] found for #{raw_keys.inspect}" unless desc
+    {display_key, desc}
+  end
 
   # Starts hidden — shown only after `toggle` is called (`[?]`).
   def initialize(id : String? = nil)

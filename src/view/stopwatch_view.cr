@@ -1,5 +1,6 @@
 require "crystal_tui"
 require "../layout_config"
+require "../screen_controller"
 require "../scroll_arrows"
 require "../screen"
 require "../stack_layout"
@@ -13,6 +14,7 @@ require "../widget/lap_grid"
 # above it, and a status line below.
 class Cresium::StopwatchView
   include StackLayout
+  include ScreenView
 
   getter screen : Screen
   getter status : Tui::Label
@@ -42,11 +44,10 @@ class Cresium::StopwatchView
     @status.z_index = 1
     @scroll_up.z_index = 1
     @scroll_down.z_index = 1
-    @screen.add_child(@displays.first)
-    @screen.add_child(@laps)
-    @screen.add_child(@status)
-    @screen.add_child(@scroll_up)
-    @screen.add_child(@scroll_down)
+
+    [@displays.first, @laps, @status, @scroll_up, @scroll_down].each do |screen|
+      @screen.add_child(screen)
+    end
   end
 
   # Shows or hides the whole screen (used when switching to/from the timer
@@ -75,6 +76,7 @@ class Cresium::StopwatchView
 
     @slots.each_with_index do |sw_index, slot|
       d = @displays[slot]
+      
       if sw_index && sw_index < stopwatches.size
         d.text = stopwatches[sw_index].format(show_millis)
         d.style = Theme.style(Theme::MUTED)

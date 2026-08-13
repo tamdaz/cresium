@@ -1,11 +1,13 @@
 require "crystal_tui"
 require "../digits"
+require "../render_helpers"
 
 # Renders a string (time or input) as ASCII art via `Digits`, centered in
 # its rect, with an optional character highlighted (`cursor_index`).
 class Cresium::DigitDisplay < Tui::Widget
+  include Styled
+
   getter text : String = ""
-  property style : Tui::Style = Tui::Style.new(fg: Tui::Color.default)
 
   # Renders with `Digits::LARGE_GLYPHS` (7 lines) instead of the default
   # small set (4 lines, block octants) when `true`.

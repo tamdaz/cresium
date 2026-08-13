@@ -1,6 +1,8 @@
 require "crystal_tui"
+require "../digit_input"
 require "../format_span"
 require "../layout_config"
+require "../screen_controller"
 require "../scroll_arrows"
 require "../screen"
 require "../stack_layout"
@@ -13,6 +15,7 @@ require "../widget/digit_display"
 # above it (while editing), and a status line below.
 class Cresium::TimerView
   include StackLayout
+  include ScreenView
 
   getter screen : Screen
   getter status : Tui::Label
@@ -67,14 +70,12 @@ class Cresium::TimerView
   end
 
   # Updates the displayed text/styles/history/scroll arrows from the current
-  # state; called every frame by `TimerController#tick`. `buffer`/
-  # `target_time_buffer` are the raw hh:mm[:ss] digit strings being typed;
-  # `cursor_pos`/`target_time_cursor_pos` and `cursor_active`/
-  # `target_time_cursor_active` drive the blinking input cursor.
+  # state; called every frame by `TimerController#tick`. `input`/
+  # `target_time_input` hold the raw hh:mm[:ss] digit buffer and cursor
+  # being typed; only one of them is active at a time, per `target_time_mode`.
   def refresh(
     rect : Tui::Rect, timers : Array(Timer), active : Timer, editing : Bool,
-    buffer : String, cursor_pos : Int32, cursor_active : Bool,
-    target_time_mode : Bool, target_time_buffer : String, target_time_cursor_pos : Int32, target_time_cursor_active : Bool,
+    input : DigitInput, target_time_mode : Bool, target_time_input : DigitInput,
     history : Array(Time::Span), show_millis_flag : Bool,
   ) : Nil
     @tick_count += 1
@@ -88,10 +89,15 @@ class Cresium::TimerView
       end
     )
 
-    active_text = editing ? render_timer_buffer(buffer, target_time_buffer, target_time_mode) : active.format(show_millis)
-    cursor_index = editing ? timer_cursor_index(
-      active, editing, cursor_pos, cursor_active, target_time_mode, target_time_cursor_pos, target_time_cursor_active
-    ) : nil
+    active_input = target_time_mode ? target_time_input : input
+
+    if editing
+      active_text = render_timer_buffer(input.buffer, target_time_input.buffer, target_time_mode)
+      cursor_index = timer_cursor_index(active, editing, active_input)
+    else
+      active_text = active.format(show_millis)
+      cursor_index = nil
+    end
 
     @slots.each_with_index do |tm_index, slot|
       d = @displays[slot]
@@ -155,16 +161,9 @@ class Cresium::TimerView
   # Index (in the rendered `hh:mm[:ss]` text) of the digit to highlight as a
   # blinking cursor, or `nil` if no cursor should show. Shifted by one `:`
   # per two-digit group crossed.
-  private def timer_cursor_index(
-    active : Timer, editing : Bool, cursor_pos : Int32, cursor_active : Bool,
-    target_time_mode : Bool, target_time_cursor_pos : Int32, target_time_cursor_active : Bool,
-  ) : Int32?
+  private def timer_cursor_index(active : Timer, editing : Bool, input : DigitInput) : Int32?
     return nil unless cursor_visible?(editing, active)
 
-    if target_time_mode
-      target_time_cursor_pos + target_time_cursor_pos // 2
-    else
-      cursor_pos + cursor_pos // 2
-    end
+    input.cursor_pos + input.cursor_pos // 2
   end
 end

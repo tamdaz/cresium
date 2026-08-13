@@ -8,7 +8,7 @@ module Cresium::LayoutConfig
   MIN_HEIGHT = 25
 
   # Terminal size at/above which digits switch to `Digits::LARGE_GLYPHS`.
-  LARGE_MIN_WIDTH  = 160
+  LARGE_MIN_WIDTH  = 120
   LARGE_MIN_HEIGHT =  40
 
   LAP_COMPACT_WIDTH_THRESHOLD = 80
